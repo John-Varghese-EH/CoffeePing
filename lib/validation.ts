@@ -6,7 +6,6 @@ export const serverCreateSchema = z.object({
     .string()
     .min(1, "Server name is required")
     .max(100, "Server name must be less than 100 characters")
-    .regex(/^[a-zA-Z0-9\s-_]+$/, "Server name can only contain letters, numbers, spaces, hyphens, and underscores")
     .transform((val) => val.trim()),
   url: z
     .string()
@@ -147,7 +146,6 @@ export const statusPageCreateSchema = z.object({
     .string()
     .min(1, "Status page name is required")
     .max(100, "Status page name must be less than 100 characters")
-    .regex(/^[a-zA-Z0-9\s-_]+$/, "Status page name can only contain letters, numbers, spaces, hyphens, and underscores")
     .transform((val) => val.trim()),
   slug: z
     .string()

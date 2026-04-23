@@ -32,7 +32,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [serverName, setServerName] = useState("");
   const [serverUrl, setServerUrl] = useState("");
-  const [intervalMinutes, setIntervalMinutes] = useState(5);
+  const [intervalMinutes, setIntervalMinutes] = useState(10);
   const [creating, setCreating] = useState(false);
 
   const steps = [
@@ -76,12 +76,18 @@ export default function OnboardingPage() {
 
       setCreating(true);
       try {
+        // Auto-prepend https:// if protocol is missing
+        let finalUrl = serverUrl.trim();
+        if (finalUrl && !finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+          finalUrl = "https://" + finalUrl;
+        }
+
         const res = await fetch("/api/servers", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: serverName,
-            url: serverUrl,
+            url: finalUrl,
             intervalMinutes,
             successKeywords: [],
           }),
@@ -227,9 +233,11 @@ export default function OnboardingPage() {
                   <Label>Ping Interval</Label>
                   <div className="grid grid-cols-3 gap-3 mt-3">
                     {[
-                      { value: 5, label: "5 min", desc: "Recommended" },
+                      { value: 5, label: "5 min", desc: "Fast" },
+                      { value: 10, label: "10 min", desc: "Recommended" },
                       { value: 15, label: "15 min", desc: "Balanced" },
                       { value: 30, label: "30 min", desc: "Minimal" },
+                      { value: 60, label: "60 min", desc: "Hourly" },
                     ].map((option) => (
                       <button
                         key={option.value}

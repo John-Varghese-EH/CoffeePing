@@ -179,7 +179,7 @@ export default function DashboardPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [newUrl, setNewUrl] = useState("");
   const [newName, setNewName] = useState("");
-  const [newInterval, setNewInterval] = useState(5);
+  const [newInterval, setNewInterval] = useState(10);
   const [addingServer, setAddingServer] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
@@ -230,12 +230,18 @@ export default function DashboardPage() {
     if (!newUrl || !newName) return;
     setAddingServer(true);
     try {
+      // Auto-prepend https:// if protocol is missing
+      let finalUrl = newUrl.trim();
+      if (finalUrl && !finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+        finalUrl = "https://" + finalUrl;
+      }
+
       const res = await fetch("/api/servers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: newName,
-          url: newUrl,
+          url: finalUrl,
           intervalMinutes: newInterval,
           successKeywords: [],
         }),
