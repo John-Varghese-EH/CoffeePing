@@ -116,6 +116,7 @@ export async function POST(request: Request) {
     const parsed = serverCreateSchema.safeParse(body);
 
     if (!parsed.success) {
+      const fieldErrors = parsed.error.errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ");
       await logSecurityEvent("validation_error", {
         userId: user.id,
         endpoint: "/api/servers",
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
         ip: getClientIp(request),
       });
       return NextResponse.json(
-        { error: "Validation failed", details: parsed.error.flatten() },
+        { error: fieldErrors || "Validation failed", details: parsed.error.flatten() },
         { status: 400 }
       );
     }

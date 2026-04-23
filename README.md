@@ -114,19 +114,18 @@ vercel env pull .env.local
 npx prisma migrate deploy
 ```
 
-#### 6. Set Up Cron Job
+#### 6. Set Up Cron Job (Required for Free Tier)
 
-Configure a cron job to run the ping engine:
+Vercel's Hobby plan limits internal cron jobs to once per day. To successfully ping your servers every 5 minutes for free, we recommend using [cron-job.org](https://cron-job.org):
 
-```bash
-# Using Vercel Cron Jobs
-vercel cron add "*/5 * * * *" https://your-domain.vercel.app/api/cron/ping
-```
-
-Or use an external service like [cron-job.org](https://cron-job.org) to ping:
-```
-https://your-domain.vercel.app/api/cron/ping?secret=PING_WORKER_SECRET
-```
+1. **Set your Secret:** In your Vercel Project Settings > Environment Variables, ensure `PING_WORKER_SECRET` is set to a secure random password.
+2. **Create Cron Job:** Create a free account at [cron-job.org](https://cron-job.org) and click "Create Cronjob".
+   - **URL:** `https://your-domain.vercel.app/api/cron/ping`
+   - **Schedule:** Every 5 minutes
+3. **Authenticate:** Scroll down to the **Advanced** section and check "Add HTTP request headers".
+   - **Header:** `x-cron-secret`
+   - **Value:** *(The exact password you set in Vercel)*
+4. **Save & Test:** Click Create! Your free-tier backend will now be caffeinated every 5 minutes.
 
 ### Production Checklist
 

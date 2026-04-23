@@ -3,11 +3,7 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["iad1"],
-  "crons": [
-    {
-      "path": "/api/cron/ping",
-      "schedule": "*/5 * * * *"
-    }
+  "regions": [
+    "iad1"
   ]
 }
