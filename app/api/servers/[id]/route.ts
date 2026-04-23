@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
 const updateSchema = z.object({
   name: z.string().min(1).max(120).optional(),
   url: z.string().url().max(500).optional(),
