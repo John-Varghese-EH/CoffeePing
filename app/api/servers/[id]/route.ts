@@ -17,8 +17,9 @@ const updateSchema = z.object({
   headers: z.record(z.string()).optional(),
 });
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient();
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -29,32 +30,33 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   const existing = await prisma.server.findFirst({
-    where: { id: params.id, userId: user.id },
+    where: { id, userId: user.id },
   });
   if (!existing) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   const updated = await prisma.server.update({
-    where: { id: params.id },
+    where: { id },
     data: parsed.data,
   });
 
   return NextResponse.json(updated);
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient();
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const existing = await prisma.server.findFirst({
-    where: { id: params.id, userId: user.id },
+    where: { id, userId: user.id },
   });
   if (!existing) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  await prisma.server.delete({ where: { id: params.id } });
+  await prisma.server.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

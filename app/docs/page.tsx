@@ -119,7 +119,7 @@ export default function DocsPage() {
                     </div>
                     <pre className="text-sm overflow-x-auto">
                       <code className="text-muted-foreground">
-{`curl -X POST https://coffeeping.com/api/servers \\
+                        {`curl -X POST https://coffeeping.com/api/servers \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -236,7 +236,7 @@ export default function DocsPage() {
                     <div className="rounded-lg bg-card border p-4">
                       <pre className="text-sm overflow-x-auto">
                         <code className="text-muted-foreground">
-{`{
+                          {`{
   "name": "My API",
   "url": "https://api.example.com/health",
   "intervalMinutes": 5,
@@ -315,7 +315,7 @@ export default function DocsPage() {
                       <div className="rounded-lg bg-card border p-4">
                         <pre className="text-sm overflow-x-auto">
                           <code className="text-muted-foreground">
-{`{
+                            {`{
   "serverId": "srv_abc123",
   "serverName": "My API",
   "serverUrl": "https://api.example.com/health",
@@ -503,16 +503,16 @@ export default function DocsPage() {
                   Start caffeinating your free-tier backends today
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/signup">
-                    <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white">
+                  <Button asChild size="lg" className="bg-coffee hover:bg-coffee-light text-white">
+                    <Link href="/signup">
                       Sign Up Free <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <Link href="https://github.com" target="_blank">
-                    <Button size="lg" variant="outline">
+                    </Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline">
+                    <Link href="https://github.com/John-Varghese-EH/CoffeePing" target="_blank">
                       View on GitHub
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

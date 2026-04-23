@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,18 +31,18 @@ export default function NotFound() {
 
             {/* Helpful Links */}
             <div className="grid gap-4 md:grid-cols-2">
-              <Link href="/">
-                <Button variant="outline" className="w-full">
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/">
                   <Home className="mr-2 h-4 w-4" />
                   Go to Homepage
-                </Button>
-              </Link>
-              <Link href="/docs">
-                <Button variant="outline" className="w-full">
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/docs">
                   <Search className="mr-2 h-4 w-4" />
                   Browse Documentation
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </Card>
 

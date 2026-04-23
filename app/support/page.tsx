@@ -229,12 +229,12 @@ export default function SupportPage() {
                 CoffeePing is 100% free and open-source. If this project helps you, consider supporting the creator to keep it running forever.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
-                <Link href="/donate">
-                  <Button className="bg-red-500 hover:bg-red-600 text-white">
+                <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
+                  <Link href="/donate">
                     <Heart className="mr-2 h-4 w-4 hover:scale-125 transition-transform" />
                     Donate
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <a
                   href="https://github.com/John-Varghese-EH/CoffeePing"
                   target="_blank"

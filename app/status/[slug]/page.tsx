@@ -3,20 +3,16 @@ import { prisma } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Coffee, Globe, ArrowUpRight } from "lucide-react";
 
-export async function generateStaticParams() {
-  const pages = await prisma.statusPage.findMany({
-    select: { slug: true },
-  });
-  return pages.map((p) => ({ slug: p.slug }));
-}
+
 
 export default async function StatusPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const page = await prisma.statusPage.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       user: {
         include: {

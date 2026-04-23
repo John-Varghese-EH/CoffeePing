@@ -203,17 +203,17 @@ export default function AboutPage() {
             Join thousands of developers who trust CoffeePing. Set up in 2 minutes, no credit card required.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/signup">
-              <Button className="bg-coffee hover:bg-coffee-light text-white px-8">
+            <Button asChild className="bg-coffee hover:bg-coffee-light text-white px-8">
+              <Link href="/signup">
                 Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="https://github.com/John-Varghese-EH/CoffeePing" target="_blank">
-              <Button variant="outline" className="px-8">
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="px-8">
+              <Link href="https://github.com/John-Varghese-EH/CoffeePing" target="_blank">
                 <Github className="mr-2 h-4 w-4" />
                 Star on GitHub
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </Card>
 

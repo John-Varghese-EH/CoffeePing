@@ -68,18 +68,18 @@ export default function ChangelogPage() {
               </p>
             </div>
             <div className="flex gap-3">
-              <Link href="https://github.com/John-Varghese-EH/CoffeePing/issues" target="_blank">
-                <Button variant="outline" className="px-4">
+              <Button asChild variant="outline" className="px-4">
+                <Link href="https://github.com/John-Varghese-EH/CoffeePing/issues" target="_blank">
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Request Feature
-                </Button>
-              </Link>
-              <Link href="https://github.com/John-Varghese-EH/CoffeePing" target="_blank">
-                <Button className="bg-coffee hover:bg-coffee-light text-white px-4">
+                </Link>
+              </Button>
+              <Button asChild className="bg-coffee hover:bg-coffee-light text-white px-4">
+                <Link href="https://github.com/John-Varghese-EH/CoffeePing" target="_blank">
                   <Star className="mr-2 h-4 w-4" />
                   Star on GitHub
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         </Card>
