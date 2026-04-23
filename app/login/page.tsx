@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +10,13 @@ import { Coffee, Github, Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Footer } from "@/components/footer";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginContent() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -35,8 +37,8 @@ export default function LoginPage() {
         variant: "destructive",
       });
     } else {
-      toast({ title: "Welcome back!", description: "Redirecting to your dashboard..." });
-      router.push("/dashboard");
+      toast({ title: "Welcome back!", description: "Redirecting..." });
+      router.push(redirectTo);
       router.refresh();
     }
   };
@@ -242,5 +244,13 @@ export default function LoginPage() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

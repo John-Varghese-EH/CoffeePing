@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { checkRateLimit, getClientIp, sanitizeUrl, logSecurityEvent } from "@/lib/security";
 import { serverCreateSchema } from "@/lib/validation";
 import { createClient } from "@/lib/supabase/server";
+import { ensureUser } from "@/lib/ensure-user";
 
 export const dynamic = "force-dynamic";
 
@@ -130,6 +131,9 @@ export async function POST(request: Request) {
 
     // Sanitize URL
     const sanitizedUrl = sanitizeUrl(parsed.data.url as string);
+
+    // Ensure user exists in Prisma (bridges Supabase Auth → Prisma FK)
+    await ensureUser(user);
 
     const server = await prisma.server.create({
       data: {

@@ -57,6 +57,10 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  // Cascade delete: pings, incidents, notification channels first
+  await prisma.pingLog.deleteMany({ where: { serverId: id } });
+  await prisma.incident.deleteMany({ where: { serverId: id } });
+  await prisma.notificationChannel.deleteMany({ where: { serverId: id } });
   await prisma.server.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

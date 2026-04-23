@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -6,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Mail,
   MessageCircle,
@@ -19,10 +23,44 @@ import {
   Users,
   Heart,
   Github,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 
 export default function SupportPage() {
+  const { toast } = useToast();
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        toast({ title: "Message sent!", description: "We'll get back to you within 24 hours." });
+        setSent(true);
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        const data = await res.json();
+        toast({
+          title: "Failed to send",
+          description: data.error || "Please try again later.",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({ title: "Network error", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -95,40 +133,84 @@ export default function SupportPage() {
             <CardDescription>We typically respond within 24 hours</CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              action="https://docs.google.com/forms/u/0/d/e/1FAIpQLScpG4kALsXxoykBZqPzQrzvrZQSVdntQ4OplVlEpm0seEfZqw/formResponse"
-              method="POST"
-              target="_self"
-              className="space-y-6"
-            >
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="entry.541038172">Name</Label>
-                  <Input id="entry.541038172" name="entry.541038172" placeholder="Your name" required />
+            {sent ? (
+              <div className="flex flex-col items-center gap-4 py-8">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+                  <CheckCircle2 className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-semibold">Message Sent!</h3>
+                <p className="text-muted-foreground text-center max-w-md">
+                  Thank you for reaching out. We&apos;ll get back to you within 24 hours.
+                </p>
+                <Button variant="outline" onClick={() => setSent(false)}>
+                  Send Another Message
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-name">Name</Label>
+                    <Input
+                      id="contact-name"
+                      placeholder="Your name"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-email">Email *</Label>
+                    <Input
+                      id="contact-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="entry.449057015">Email *</Label>
-                  <Input id="entry.449057015" name="entry.449057015" type="email" placeholder="you@example.com" required />
+                  <Label htmlFor="contact-subject">Subject</Label>
+                  <Input
+                    id="contact-subject"
+                    placeholder="How can we help?"
+                    value={form.subject}
+                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    required
+                  />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="entry.1360337517">Subject</Label>
-                <Input id="entry.1360337517" name="entry.1360337517" placeholder="How can we help?" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="entry.1519177737">Message</Label>
-                <textarea
-                  id="entry.1519177737"
-                  name="entry.1519177737"
-                  className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Tell us more about your issue..."
-                  required
-                />
-              </div>
-              <Button type="submit" size="lg" className="bg-coffee hover:bg-coffee-light text-white">
-                Send Message <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </form>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-message">Message</Label>
+                  <textarea
+                    id="contact-message"
+                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Tell us more about your issue..."
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={sending}
+                  className="bg-coffee hover:bg-coffee-light text-white"
+                >
+                  {sending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
 
