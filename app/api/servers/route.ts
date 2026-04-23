@@ -137,7 +137,7 @@ export async function POST(request: Request) {
         intervalMinutes: parsed.data.intervalMinutes as number,
         expectedStatus: parsed.data.expectedStatus as number,
         timeoutMs: parsed.data.timeoutMs as number,
-        successKeywords: parsed.data.successKeywords as string[],
+        successKeywords: parsed.data.successKeywords,
         headers: parsed.data.headers as Record<string, string> | undefined,
         followRedirects: parsed.data.followRedirects as boolean,
       },

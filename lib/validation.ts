@@ -36,9 +36,10 @@ export const serverCreateSchema = z.object({
     .max(30000, "Timeout must be at most 30000ms")
     .default(5000),
   successKeywords: z
-    .string()
-    .max(500, "Success keywords must be less than 500 characters")
-    .optional(),
+    .array(z.string().max(100, "Keyword must be less than 100 characters"))
+    .max(10, "Maximum 10 keywords allowed")
+    .optional()
+    .default([]),
   headers: z
     .record(z.string())
     .refine((headers) => !headers || Object.keys(headers).length <= 10, "Maximum 10 headers allowed")

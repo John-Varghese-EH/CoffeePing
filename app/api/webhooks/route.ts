@@ -145,9 +145,11 @@ export async function POST(request: Request) {
         userId: user.id,
         serverId: parsed.data.serverId as string,
         type: parsed.data.type,
-        name: parsed.data.name as string,
-        url: sanitizedUrl,
-        config: parsed.data.config,
+        label: parsed.data.name as string,
+        config: {
+          url: sanitizedUrl,
+          ...(parsed.data.config || {})
+        },
       },
     });
 

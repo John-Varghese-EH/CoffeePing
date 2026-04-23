@@ -243,7 +243,7 @@ export function generateCsrfToken(): string {
 export function validateCsrfToken(token: string, sessionToken: string): boolean {
   // In production, you'd want to verify the token against the session
   // This is a simplified version
-  return token && token.length === 64;
+  return !!token && token.length === 64;
 }
 
 /**
