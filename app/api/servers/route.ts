@@ -4,6 +4,8 @@ import { checkRateLimit, getClientIp, sanitizeUrl, logSecurityEvent } from "@/li
 import { serverCreateSchema } from "@/lib/validation";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const supabase = createClient();
