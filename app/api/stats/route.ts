@@ -105,7 +105,7 @@ export async function GET() {
     const lastPings = serverIds.length > 0
       ? await prisma.pingLog.findMany({
           where: { serverId: { in: serverIds } },
-          orderBy: { pingedAt: "desc" },
+          orderBy: [{ serverId: "asc" }, { pingedAt: "desc" }],
           distinct: ["serverId"],
           select: {
             serverId: true,

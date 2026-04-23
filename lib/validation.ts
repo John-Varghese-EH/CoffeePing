@@ -28,12 +28,14 @@ export const serverCreateSchema = z.object({
     .int("Expected status must be an integer")
     .min(100, "Expected status must be at least 100")
     .max(599, "Expected status must be at most 599")
+    .optional()
     .default(200),
   timeoutMs: z
     .number()
     .int("Timeout must be an integer")
     .min(1000, "Timeout must be at least 1000ms")
     .max(30000, "Timeout must be at most 30000ms")
+    .optional()
     .default(5000),
   successKeywords: z
     .array(z.string().max(100, "Keyword must be less than 100 characters"))
@@ -44,7 +46,7 @@ export const serverCreateSchema = z.object({
     .record(z.string())
     .refine((headers) => !headers || Object.keys(headers).length <= 10, "Maximum 10 headers allowed")
     .optional(),
-  followRedirects: z.boolean().default(true),
+  followRedirects: z.boolean().optional().default(true),
 });
 
 export const serverUpdateSchema = serverCreateSchema.partial();
@@ -112,7 +114,6 @@ export const signupSchema = z.object({
     .string()
     .min(1, "Full name is required")
     .max(100, "Full name must be less than 100 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Full name can only contain letters, spaces, hyphens, and apostrophes")
     .transform((val) => val.trim()),
 });
 
@@ -122,7 +123,6 @@ export const contactFormSchema = z.object({
     .string()
     .min(1, "Name is required")
     .max(100, "Name must be less than 100 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes")
     .transform((val) => val.trim()),
   email: z
     .string()

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Confirm Your New Email Address</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ededed;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table width="100%" max-width="500" border="0" cellspacing="0" cellpadding="0" style="max-width: 500px; background-color: #171717; border: 1px solid #3B2F2F; border-radius: 12px; overflow: hidden; text-align: left;">
+          <tr>
+            <td style="padding: 30px;">
+              <h2 style="margin-top: 0; color: #A67B5B; font-size: 24px; font-weight: 600;">Confirm New Email 📧</h2>
+              <p style="color: #a3a3a3; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                You recently requested to change the email address associated with your CoffeePing account to <strong>{{ .Email }}</strong>. Click the button below to confirm this change.
+              </p>
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center" style="border-radius: 8px; background-color: #6F4E37;">
+                    <a href="{{ .ConfirmationURL }}" target="_blank" style="font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 8px; padding: 14px 28px; border: 1px solid #6F4E37; display: inline-block; font-weight: 600;">Confirm New Email</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="color: #525252; font-size: 14px; margin-top: 30px; margin-bottom: 0; line-height: 1.5;">
+                If you didn't request an email change, you can safely ignore this email. Your account is still secure.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #0f0f0f; padding: 20px 30px; border-top: 1px solid #262626; text-align: center;">
+              <p style="color: #525252; font-size: 12px; margin: 0; line-height: 1.6;">
+                &copy; 2026 CoffeePing. All rights reserved.<br>
+                <a href="{{ .SiteURL }}" style="color: #A67B5B; text-decoration: none;">coffeeping.vercel.app</a><br>
+                <span style="display: block; margin-top: 8px;">Made with ❤️ by <a href="https://github.com/John-Varghese-EH" style="color: #525252; text-decoration: underline;">John Varghese (J0X)</a></span>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

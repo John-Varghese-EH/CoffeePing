@@ -25,10 +25,10 @@ export const rateLimiters = {
     prefix: "ratelimit:auth",
   }),
 
-  // Server creation rate limiter (10 per hour)
+  // Server creation rate limiter (50 per hour)
   serverCreate: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(10, "1h"),
+    limiter: Ratelimit.slidingWindow(50, "1h"),
     analytics: true,
     prefix: "ratelimit:server-create",
   }),
@@ -80,7 +80,7 @@ export async function checkRateLimit(
  */
 export function sanitizeHtml(input: string): string {
   if (!input) return "";
-  
+
   // Remove potentially dangerous HTML tags and attributes
   return input
     .replace(/&/g, "&amp;")
@@ -97,16 +97,16 @@ export function sanitizeHtml(input: string): string {
 export function sanitizeUrl(url: string): string {
   try {
     const urlObj = new URL(url);
-    
+
     // Only allow http and https protocols
     if (!["http:", "https:"].includes(urlObj.protocol)) {
       throw new Error("Invalid protocol");
     }
-    
+
     // Remove authentication credentials for security, but preserve port
     urlObj.username = "";
     urlObj.password = "";
-    
+
     return urlObj.toString();
   } catch (error) {
     throw new Error("Invalid URL format");
@@ -121,11 +121,11 @@ export function generateSecureToken(length: number = 32): string {
   let result = "";
   const randomValues = new Uint32Array(length);
   crypto.getRandomValues(randomValues);
-  
+
   for (let i = 0; i < length; i++) {
     result += chars[randomValues[i] % chars.length];
   }
-  
+
   return result;
 }
 
@@ -168,19 +168,19 @@ export function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   const realIp = request.headers.get("x-real-ip");
   const cfConnectingIp = request.headers.get("cf-connecting-ip");
-  
+
   if (forwarded) {
     return forwarded.split(",")[0].trim();
   }
-  
+
   if (realIp) {
     return realIp;
   }
-  
+
   if (cfConnectingIp) {
     return cfConnectingIp;
   }
-  
+
   return "unknown";
 }
 
@@ -197,10 +197,10 @@ export async function logSecurityEvent(
     details,
     severity: details.severity || "info",
   };
-  
+
   // In production, send to logging service
   console.error("[SECURITY]", JSON.stringify(logEntry));
-  
+
   // You could also store in database or send to external monitoring
 }
 
@@ -250,10 +250,10 @@ export function validateCsrfToken(token: string, sessionToken: string): boolean 
  */
 export function maskSensitiveData(data: string, maskChar: string = "*"): string {
   if (!data || data.length < 4) return maskChar.repeat(4);
-  
+
   const visibleChars = 4;
   const maskedLength = data.length - visibleChars;
-  
+
   return data.slice(0, 2) + maskChar.repeat(maskedLength) + data.slice(-2);
 }
 
@@ -265,27 +265,27 @@ export function validatePasswordStrength(password: string): {
   errors: string[];
 } {
   const errors: string[] = [];
-  
+
   if (password.length < 8) {
     errors.push("Password must be at least 8 characters long");
   }
-  
+
   if (!/[A-Z]/.test(password)) {
     errors.push("Password must contain at least one uppercase letter");
   }
-  
+
   if (!/[a-z]/.test(password)) {
     errors.push("Password must contain at least one lowercase letter");
   }
-  
+
   if (!/[0-9]/.test(password)) {
     errors.push("Password must contain at least one number");
   }
-  
+
   if (!/[^A-Za-z0-9]/.test(password)) {
     errors.push("Password must contain at least one special character");
   }
-  
+
   return {
     valid: errors.length === 0,
     errors,
@@ -310,7 +310,7 @@ export const securityHeaders = {
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
   ].join("; "),
-  
+
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "X-XSS-Protection": "1; mode=block",
@@ -321,6 +321,6 @@ export const securityHeaders = {
     "geolocation=()",
     "interest-cohort=()",
   ].join(", "),
-  
+
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
 };
