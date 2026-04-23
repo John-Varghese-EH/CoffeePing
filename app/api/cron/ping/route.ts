@@ -15,9 +15,14 @@ export const dynamic = "force-dynamic";
  * Fetches all active servers, adds human-like jitter, and pings them.
  */
 export async function GET(request: Request) {
-  // Simple auth via secret header (configure in cron job headers)
-  const authHeader = request.headers.get("x-cron-secret");
-  if (authHeader !== process.env.PING_WORKER_SECRET) {
+  // Support both custom worker secret and Vercel's built-in CRON_SECRET
+  const authHeader = request.headers.get("authorization");
+  const customHeader = request.headers.get("x-cron-secret");
+  
+  const isValidVercelCron = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+  const isValidCustomCron = customHeader === process.env.PING_WORKER_SECRET;
+
+  if (!isValidVercelCron && !isValidCustomCron && process.env.NODE_ENV === "production") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

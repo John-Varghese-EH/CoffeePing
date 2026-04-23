@@ -576,20 +576,16 @@ export default function DashboardPage() {
                             {server.lastPing && (
                               <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                                 <span className="inline-flex items-center gap-1">
-                                  <Activity className="h-3 w-3" />
-                                  {server.lastPing.responseTimeMs}ms
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  {server.uptime24h >= 99 ? (
+                                  {server.lastPing.success ? (
                                     <CheckCircle2 className="h-3 w-3 text-emerald-400" />
                                   ) : (
-                                    <XCircle className="h-3 w-3 text-amber-400" />
+                                    <XCircle className="h-3 w-3 text-red-400" />
                                   )}
-                                  {server.uptime24h}% uptime
+                                  Last Status: {server.lastPing.statusCode || (server.lastPing.success ? "200" : "Failed")}
                                 </span>
                                 <span className="inline-flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
-                                  {new Date(server.lastPing.pingedAt).toLocaleTimeString()}
+                                  Last Ping: {new Date(server.lastPing.pingedAt).toLocaleTimeString()}
                                 </span>
                               </div>
                             )}

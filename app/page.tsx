@@ -584,35 +584,6 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="rounded-3xl border border-coffee/20 bg-gradient-to-br from-coffee/10 to-transparent p-16 text-center">
-          <Globe className="mx-auto mb-6 h-12 w-12 text-coffee-light" />
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Ready to Stop Cold Starts?
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-xl text-muted-foreground">
-            Paste a URL. Pick an interval. Done. Your free-tier backend will
-            stay caffeinated forever.
-          </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/signup">
-              <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white px-10 text-lg h-14">
-                Get Caffeinated for Free <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/docs">
-              <Button size="lg" variant="outline" className="px-10 text-lg h-14">
-                Read the Docs
-              </Button>
-            </Link>
-          </div>
-          <p className="mt-6 text-sm text-muted-foreground">
-            Free forever for up to 3 URLs. No credit card required.
-          </p>
-        </div>
-      </section>
-
-      {/* CTA */}
       <section id="pricing" className="mx-auto max-w-7xl px-6 py-24">
         <div className="rounded-2xl border border-coffee/20 bg-gradient-to-br from-coffee/10 to-transparent p-12 text-center">
           <Globe className="mx-auto mb-4 h-10 w-10 text-coffee-light" />
@@ -624,9 +595,16 @@ export default function LandingPage() {
             stay caffeinated forever.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white px-8">
-              Get Caffeinated for Free <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/signup">
+              <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white px-8">
+                Get Caffeinated for Free <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/docs">
+              <Button size="lg" variant="outline" className="px-10 text-lg h-14">
+                Read the Docs
+              </Button>
+            </Link>
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
             Free forever for up to 3 URLs. No credit card required.
