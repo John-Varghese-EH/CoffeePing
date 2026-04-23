@@ -31,7 +31,7 @@ const nextConfig = {
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'",
+              "form-action 'self' https://docs.google.com",
               "frame-ancestors 'none'",
               "upgrade-insecure-requests",
             ].join("; "),

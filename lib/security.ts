@@ -68,7 +68,7 @@ export async function checkRateLimit(
   const rateLimiter = rateLimiters[limiter];
   const result = await rateLimiter.limit(identifier);
   return {
-    success: !result.success,
+    success: result.success,
     limit: result.limit,
     remaining: result.remaining,
     reset: result.reset,
@@ -103,10 +103,9 @@ export function sanitizeUrl(url: string): string {
       throw new Error("Invalid protocol");
     }
     
-    // Remove authentication and port for security
+    // Remove authentication credentials for security, but preserve port
     urlObj.username = "";
     urlObj.password = "";
-    urlObj.port = "";
     
     return urlObj.toString();
   } catch (error) {

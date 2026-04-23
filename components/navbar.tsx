@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Coffee, Activity, Github, LogOut, User, Menu, X, Heart, MessageCircle, Users, Zap, Home, BookOpen, LifeBuoy, Sparkles } from "lucide-react";
+import { Coffee, Activity, Github, LogOut, Settings, Menu, X, Heart, BookOpen, LifeBuoy, Sparkles, Home } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -33,6 +33,8 @@ export function Navbar() {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -69,12 +71,21 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {user ? (
             <>
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="gap-2">
+              <span className="text-sm text-muted-foreground hidden lg:block">
+                {displayName}
+              </span>
+              <Button asChild variant="ghost" size="sm" className="gap-2">
+                <Link href="/dashboard">
                   <Activity className="h-4 w-4" />
                   Dashboard
-                </Button>
-              </Link>
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm" className="gap-2">
+                <Link href="/settings">
+                  <Settings className="h-4 w-4" />
+                  Settings
+                </Link>
+              </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
                 <LogOut className="h-4 w-4" />
                 Logout
@@ -82,14 +93,12 @@ export function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Login</Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm" className="bg-coffee hover:bg-coffee-light text-white">
-                  Get Started
-                </Button>
-              </Link>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild size="sm" className="bg-coffee hover:bg-coffee-light text-white">
+                <Link href="/signup">Get Started</Link>
+              </Button>
             </>
           )}
         </div>
@@ -117,7 +126,7 @@ export function Navbar() {
               className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <Coffee className="h-4 w-4" />
+              <Home className="h-4 w-4" />
               Home
             </Link>
             <Link
@@ -164,7 +173,10 @@ export function Navbar() {
 
             <div className="border-t border-border/40 pt-4 mt-4">
               {user ? (
-                <div className="space-y-2">
+                <div className="space-y-1">
+                  <div className="px-4 py-2 text-xs text-muted-foreground">
+                    Signed in as <span className="font-medium text-foreground">{displayName}</span>
+                  </div>
                   <Link
                     href="/dashboard"
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -172,6 +184,14 @@ export function Navbar() {
                   >
                     <Activity className="h-4 w-4" />
                     Dashboard
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
                   </Link>
                   <button
                     onClick={() => {

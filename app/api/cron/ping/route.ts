@@ -7,7 +7,7 @@ import {
 import { dispatchNotifications } from "@/lib/notification/bridge";
 import { prisma } from "@/lib/db";
 
-export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 /**
  * GET /api/cron/ping

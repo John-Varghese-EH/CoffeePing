@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { useToast } from "@/components/ui/use-toast";
 import {
   ArrowRight,
   CheckCircle2,
@@ -21,15 +21,19 @@ import {
   ArrowLeft,
   Heart,
   Github,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [serverName, setServerName] = useState("");
   const [serverUrl, setServerUrl] = useState("");
+  const [intervalMinutes, setIntervalMinutes] = useState(5);
+  const [creating, setCreating] = useState(false);
 
   const steps = [
     {
@@ -58,8 +62,50 @@ export default function OnboardingPage() {
     },
   ];
 
-  const handleNext = () => {
-    if (step < 4) setStep(step + 1);
+  const handleNext = async () => {
+    if (step === 3) {
+      // Actually create the server via the API
+      if (!serverName || !serverUrl) {
+        toast({
+          title: "Missing information",
+          description: "Please go back and fill in your server details.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setCreating(true);
+      try {
+        const res = await fetch("/api/servers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: serverName,
+            url: serverUrl,
+            intervalMinutes,
+            successKeywords: [],
+          }),
+        });
+
+        if (res.ok) {
+          toast({ title: "Server created!", description: `${serverName} is now being caffeinated.` });
+          setStep(4);
+        } else {
+          const data = await res.json();
+          toast({
+            title: "Failed to create server",
+            description: data.error || data.details?.fieldErrors?.url?.[0] || "Please check your input.",
+            variant: "destructive",
+          });
+        }
+      } catch {
+        toast({ title: "Network error", description: "Could not reach the server.", variant: "destructive" });
+      } finally {
+        setCreating(false);
+      }
+    } else if (step < 4) {
+      setStep(step + 1);
+    }
   };
 
   const handleBack = () => {
@@ -120,7 +166,7 @@ export default function OnboardingPage() {
                 <div className="rounded-xl bg-card border p-6 space-y-4">
                   <h3 className="font-semibold text-lg">What is CoffeePing?</h3>
                   <p className="text-muted-foreground">
-                    CoffeePing keeps your free-tier backends "caffeinated" 24/7 by sending
+                    CoffeePing keeps your free-tier backends &quot;caffeinated&quot; 24/7 by sending
                     human-like pings at regular intervals. Say goodbye to cold starts!
                   </p>
                 </div>
@@ -181,13 +227,18 @@ export default function OnboardingPage() {
                   <Label>Ping Interval</Label>
                   <div className="grid grid-cols-3 gap-3 mt-3">
                     {[
-                      { value: "5", label: "5 min", desc: "Recommended" },
-                      { value: "15", label: "15 min", desc: "Balanced" },
-                      { value: "30", label: "30 min", desc: "Minimal" },
+                      { value: 5, label: "5 min", desc: "Recommended" },
+                      { value: 15, label: "15 min", desc: "Balanced" },
+                      { value: 30, label: "30 min", desc: "Minimal" },
                     ].map((option) => (
                       <button
                         key={option.value}
-                        className="rounded-lg border border-coffee/20 p-4 text-left hover:border-coffee/40 hover:bg-coffee/5 transition-colors"
+                        onClick={() => setIntervalMinutes(option.value)}
+                        className={`rounded-lg border p-4 text-left transition-colors ${
+                          intervalMinutes === option.value
+                            ? "border-coffee bg-coffee/10"
+                            : "border-coffee/20 hover:border-coffee/40 hover:bg-coffee/5"
+                        }`}
                       >
                         <div className="font-semibold">{option.label}</div>
                         <div className="text-xs text-muted-foreground mt-1">{option.desc}</div>
@@ -204,11 +255,11 @@ export default function OnboardingPage() {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
-                      <span>We'll ping your server at the selected interval</span>
+                      <span>We&apos;ll ping your server at the selected interval</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
-                      <span>You'll receive alerts if your server goes down</span>
+                      <span>You&apos;ll receive alerts if your server goes down</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
@@ -236,11 +287,11 @@ export default function OnboardingPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Server URL:</span>
-                      <span className="font-medium">{serverUrl || "https://api.example.com/health"}</span>
+                      <span className="font-medium truncate max-w-[200px]">{serverUrl || "https://api.example.com/health"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Ping Interval:</span>
-                      <span className="font-medium">5 minutes</span>
+                      <span className="font-medium">{intervalMinutes} minutes</span>
                     </div>
                   </div>
                 </div>
@@ -253,12 +304,12 @@ export default function OnboardingPage() {
                     CoffeePing is 100% free and open-source. If this project helps you, consider supporting the creator to keep it running forever.
                   </p>
                   <div className="flex flex-wrap justify-center gap-3">
-                    <Link href="/donate">
-                      <Button className="bg-red-500 hover:bg-red-600 text-white">
+                    <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
+                      <Link href="/donate">
                         <Heart className="mr-2 h-4 w-4 hover:scale-125 transition-transform" />
                         Donate
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                     <a
                       href="https://github.com/John-Varghese-EH/CoffeePing"
                       target="_blank"
@@ -303,10 +354,19 @@ export default function OnboardingPage() {
                 )}
                 <Button
                   onClick={handleNext}
-                  disabled={step === 2 && (!serverName || !serverUrl)}
+                  disabled={(step === 2 && (!serverName || !serverUrl)) || creating}
                   className="bg-coffee hover:bg-coffee-light text-white"
                 >
-                  {step === 3 ? "Complete Setup" : "Continue"} <ArrowRight className="ml-2 h-4 w-4" />
+                  {creating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      {step === 3 ? "Complete Setup" : "Continue"} <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             )}
