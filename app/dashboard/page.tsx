@@ -186,6 +186,7 @@ export default function DashboardPage() {
   const [addingServer, setAddingServer] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [dbError, setDbError] = useState<string | null>(null);
 
   // Auth guard
   useEffect(() => {
@@ -208,9 +209,16 @@ export default function DashboardPage() {
         router.push("/login");
         return;
       }
+      if (res.status === 503) {
+        const data = await res.json();
+        setDbError(data.error || "Database not initialized");
+        setLoading(false);
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         setStats(data);
+        setDbError(null);
       }
     } catch {
       // silent fail, will retry
@@ -256,6 +264,10 @@ export default function DashboardPage() {
         await fetchStats();
       } else {
         const data = await res.json();
+        // Check for database error
+        if (data.error?.includes("Database not initialized")) {
+          setDbError(data.error);
+        }
         toast({
           title: "Failed to add server",
           description: data.error || "Please check your input and try again.",
@@ -361,6 +373,24 @@ export default function DashboardPage() {
             </Link>
           </Button>
         </div>
+
+        {/* Database Error Banner */}
+        {dbError && (
+          <Card className="mb-8 border-red-500/50 bg-red-500/10">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-red-700 dark:text-red-400">Database Not Initialized</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{dbError}</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Run <code className="bg-muted px-1 py-0.5 rounded">npx prisma db push</code> to fix this issue.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Add */}
         <Card className="mb-8 border-coffee/20">

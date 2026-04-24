@@ -29,7 +29,9 @@ import {
   AlertTriangle,
   Download,
   Coffee,
+  LayoutDashboard,
 } from "lucide-react";
+import Link from "next/link";
 
 type AccountInfo = {
   id: string;
@@ -203,6 +205,34 @@ export default function SettingsPage() {
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Settings</h1>
           <p className="mt-2 text-muted-foreground">Manage your account and preferences</p>
+        </div>
+
+        {/* Dashboard Navigation Tabs */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/notifications">
+              <Bell className="h-4 w-4" />
+              Alerts
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/status-pages">
+              <Globe className="h-4 w-4" />
+              Status Pages
+            </Link>
+          </Button>
+          <Button asChild variant="default" size="sm" className="gap-2 bg-coffee hover:bg-coffee-light text-white">
+            <Link href="/settings">
+              <Coffee className="h-4 w-4" />
+              Settings
+            </Link>
+          </Button>
         </div>
 
         {/* Profile Section */}

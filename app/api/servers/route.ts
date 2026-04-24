@@ -67,8 +67,16 @@ export async function GET(request: Request) {
       error: error instanceof Error ? error.message : "Unknown error",
       ip: getClientIp(request),
     });
+    // Check for missing table error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes("does not exist in the current database")) {
+      return NextResponse.json(
+        { error: "Database not initialized. Please run: npx prisma db push" },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
+      { error: "Internal server error", details: errorMessage },
       { status: 500 }
     );
   }
@@ -165,8 +173,16 @@ export async function POST(request: Request) {
       error: error instanceof Error ? error.message : "Unknown error",
       ip: getClientIp(request),
     });
+    // Check for missing table error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes("does not exist in the current database")) {
+      return NextResponse.json(
+        { error: "Database not initialized. Please run: npx prisma db push" },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
+      { error: "Internal server error", details: errorMessage },
       { status: 500 }
     );
   }

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Globe, Copy, ExternalLink, Trash2, ImageIcon, Palette, Code } from "lucide-react";
+import { Loader2, Globe, Copy, ExternalLink, Trash2, ImageIcon, Palette, Code, Bell, Settings, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
 
@@ -122,6 +122,34 @@ export default function StatusPagesDashboard() {
           <p className="mt-2 text-muted-foreground">
             Create a public dashboard to share your uptime with customers.
           </p>
+        </div>
+
+        {/* Dashboard Navigation Tabs */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/notifications">
+              <Bell className="h-4 w-4" />
+              Alerts
+            </Link>
+          </Button>
+          <Button asChild variant="default" size="sm" className="gap-2 bg-coffee hover:bg-coffee-light text-white">
+            <Link href="/dashboard/status-pages">
+              <Globe className="h-4 w-4" />
+              Status Pages
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/settings">
+              <Settings className="h-4 w-4" />
+              Settings
+            </Link>
+          </Button>
         </div>
 
         {loading ? (

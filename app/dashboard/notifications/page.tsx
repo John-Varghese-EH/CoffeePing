@@ -20,7 +20,11 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
+  Globe,
+  Settings,
+  LayoutDashboard,
 } from "lucide-react";
+import Link from "next/link";
 
 type ServerItem = {
   id: string;
@@ -174,6 +178,34 @@ export default function NotificationsPage() {
           <p className="mt-2 text-muted-foreground">
             Get alerted instantly when your servers go down.
           </p>
+        </div>
+
+        {/* Dashboard Navigation Tabs */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+          </Button>
+          <Button asChild variant="default" size="sm" className="gap-2 bg-coffee hover:bg-coffee-light text-white">
+            <Link href="/dashboard/notifications">
+              <Bell className="h-4 w-4" />
+              Alerts
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/status-pages">
+              <Globe className="h-4 w-4" />
+              Status Pages
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/settings">
+              <Settings className="h-4 w-4" />
+              Settings
+            </Link>
+          </Button>
         </div>
 
         {/* Add Webhook Form */}

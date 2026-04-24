@@ -158,6 +158,14 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[/api/stats]", error);
-    return NextResponse.json({ error: "Internal server error", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    // Check for missing table error
+    if (errorMessage.includes("does not exist in the current database")) {
+      return NextResponse.json(
+        { error: "Database not initialized. Please run: npx prisma db push" },
+        { status: 503 }
+      );
+    }
+    return NextResponse.json({ error: "Internal server error", details: errorMessage }, { status: 500 });
   }
 }
