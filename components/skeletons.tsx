@@ -59,19 +59,24 @@ export function DashboardSkeleton() {
             <Skeleton className="h-4 w-56" />
           </CardHeader>
           <CardContent>
-            {/* Fake chart bars */}
+            {/* Fake chart bars - deterministic values for SSR/client consistency */}
             <div className="h-[300px] sm:h-[350px] flex items-end gap-1 px-4 pt-4">
-              {Array.from({ length: 24 }, (_, i) => (
-                <div key={i} className="flex-1 flex flex-col justify-end">
-                  <Skeleton
-                    className="w-full rounded-t-sm"
-                    style={{
-                      height: `${20 + Math.sin(i * 0.5) * 30 + Math.random() * 40}%`,
-                      animationDelay: `${i * 80}ms`,
-                    }}
-                  />
-                </div>
-              ))}
+              {Array.from({ length: 24 }, (_, i) => {
+                // Use deterministic pseudo-random based on index instead of Math.random()
+                const pseudoRandom = ((i * 9301 + 49297) % 233280) / 233280;
+                const height = 20 + Math.sin(i * 0.5) * 30 + pseudoRandom * 40;
+                return (
+                  <div key={i} className="flex-1 flex flex-col justify-end">
+                    <Skeleton
+                      className="w-full rounded-t-sm"
+                      style={{
+                        height: `${height}%`,
+                        animationDelay: `${i * 80}ms`,
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Coffee, ArrowUpRight, Heart, Search } from "lucide-react";
+import { Activity, ArrowUpRight, Heart, Search, Coffee } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import StatusPageError from "./error";
 
 
 
@@ -169,28 +170,6 @@ export default async function StatusPage({
           </span>
         </div>
       </main>
-    </div>
-  );
-}
-
-// Error component for database issues
-function StatusPageError() {
-  return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <div className="text-center px-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-4">
-          <Coffee className="h-8 w-8 text-destructive" />
-        </div>
-        <h1 className="text-2xl font-bold mb-2">Service Unavailable</h1>
-        <p className="text-muted-foreground mb-6 max-w-md">
-          We&apos;re having trouble loading this status page. Please try again later.
-        </p>
-        <Button asChild>
-          <Link href="https://coffeeping.vercel.app">
-            Go to CoffeePing
-          </Link>
-        </Button>
-      </div>
     </div>
   );
 }

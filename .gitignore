@@ -22,3 +22,4 @@ node_modules
 /.next
 SEO.md
 SECURITY.md
+.env

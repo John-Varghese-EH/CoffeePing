@@ -596,7 +596,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link href="/signup">
-              <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white px-8">
+              <Button size="lg" className="bg-coffee hover:bg-coffee-light text-white px-10 h-14">
                 Get Caffeinated for Free <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

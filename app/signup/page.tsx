@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Coffee, Github, Loader2, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
 import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -126,8 +127,9 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex-1 flex items-center justify-center px-4">
-        <Card className="w-full max-w-md border-coffee/20">
+      <Navbar />
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md border-coffee/20 shadow-lg">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-coffee/10">
               <Coffee className="h-6 w-6 text-coffee-light" />
@@ -215,7 +217,9 @@ export default function SignupPage() {
           </CardContent>
         </Card>
       </div>
-      <Footer />
+      <div className="mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }
