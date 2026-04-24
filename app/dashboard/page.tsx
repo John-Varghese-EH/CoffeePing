@@ -43,6 +43,8 @@ import {
   WifiOff,
   Settings,
   Download,
+  Bell,
+  Globe,
 } from "lucide-react";
 
 type LastPing = {
@@ -335,6 +337,28 @@ export default function DashboardPage() {
           <Button variant="ghost" size="sm" onClick={fetchStats} className="gap-2" disabled={loading}>
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">Refresh</span>
+          </Button>
+        </div>
+
+        {/* Dashboard Navigation Tabs */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/notifications">
+              <Bell className="h-4 w-4" />
+              Alerts
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/dashboard/status-pages">
+              <Globe className="h-4 w-4" />
+              Status Pages
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/settings">
+              <Settings className="h-4 w-4" />
+              Settings
+            </Link>
           </Button>
         </div>
 

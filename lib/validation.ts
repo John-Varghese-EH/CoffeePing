@@ -53,7 +53,7 @@ export const serverUpdateSchema = serverCreateSchema.partial();
 // Webhook validation schemas
 export const webhookCreateSchema = z.object({
   serverId: z.string().min(1, "Server ID is required"),
-  type: z.enum(["WEBHOOK", "DISCORD", "SLACK", "TELEGRAM"]),
+  type: z.enum(["WEBHOOK", "DISCORD", "SLACK", "TELEGRAM", "EMAIL"]),
   name: z
     .string()
     .min(1, "Webhook name is required")

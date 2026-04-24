@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Coffee, Activity, Github, LogOut, Settings, Menu, X, Heart, BookOpen, LifeBuoy, Sparkles, Home, Bell, Globe } from "lucide-react";
+import { Coffee, Activity, Github, LogOut, Settings, Menu, X, Heart, BookOpen, LifeBuoy, Sparkles, Home, Bell, Globe, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -76,26 +76,8 @@ export function Navbar() {
               </span>
               <Button asChild variant="ghost" size="sm" className="gap-2">
                 <Link href="/dashboard">
-                  <Activity className="h-4 w-4" />
+                  <LayoutDashboard className="h-4 w-4" />
                   Dashboard
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm" className="gap-2">
-                <Link href="/dashboard/notifications">
-                  <Bell className="h-4 w-4" />
-                  Alerts
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm" className="gap-2">
-                <Link href="/dashboard/status-pages">
-                  <Globe className="h-4 w-4" />
-                  Status Pages
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm" className="gap-2">
-                <Link href="/settings">
-                  <Settings className="h-4 w-4" />
-                  Settings
                 </Link>
               </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
@@ -194,32 +176,8 @@ export function Navbar() {
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <Activity className="h-4 w-4" />
+                    <LayoutDashboard className="h-4 w-4" />
                     Dashboard
-                  </Link>
-                  <Link
-                    href="/dashboard/notifications"
-                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Bell className="h-4 w-4" />
-                    Alerts
-                  </Link>
-                  <Link
-                    href="/dashboard/status-pages"
-                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Globe className="h-4 w-4" />
-                    Status Pages
-                  </Link>
-                  <Link
-                    href="/settings"
-                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Settings className="h-4 w-4" />
-                    Settings
                   </Link>
                   <button
                     onClick={() => {

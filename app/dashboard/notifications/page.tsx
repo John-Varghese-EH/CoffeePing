@@ -8,13 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import { 
-  Bell, 
-  Trash2, 
-  Plus, 
-  Loader2, 
+import {
+  Bell,
+  Trash2,
+  Plus,
+  Loader2,
   Send,
-  Webhook
+  Webhook,
+  Mail,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Clock,
 } from "lucide-react";
 
 type ServerItem = {
@@ -40,13 +45,40 @@ export default function NotificationsPage() {
   // New webhook state
   const [newLabel, setNewLabel] = useState("");
   const [newUrl, setNewUrl] = useState("");
-  const [newType, setNewType] = useState("DISCORD");
+  const [newType, setNewType] = useState("EMAIL");
   const [newServerId, setNewServerId] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
+  // Alerts state
+  const [alerts, setAlerts] = useState<Array<{
+    id: string;
+    serverName: string;
+    message: string;
+    severity: "info" | "warning" | "critical";
+    timestamp: string;
+    resolved: boolean;
+  }>>([]);
+  const [loadingAlerts, setLoadingAlerts] = useState(true);
+
   useEffect(() => {
     fetchData();
+    fetchAlerts();
   }, []);
+
+  async function fetchAlerts() {
+    setLoadingAlerts(true);
+    try {
+      const res = await fetch("/api/incidents");
+      if (res.ok) {
+        const data = await res.json();
+        setAlerts(data);
+      }
+    } catch {
+      // Silent fail for alerts
+    } finally {
+      setLoadingAlerts(false);
+    }
+  }
 
   async function fetchData() {
     setLoading(true);
@@ -162,6 +194,7 @@ export default function NotificationsPage() {
                   onChange={(e) => setNewType(e.target.value)}
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring h-10"
                 >
+                  <option value="EMAIL">Email (Default)</option>
                   <option value="DISCORD">Discord</option>
                   <option value="SLACK">Slack</option>
                   <option value="WEBHOOK">Webhook</option>
@@ -176,7 +209,7 @@ export default function NotificationsPage() {
               </div>
               <div className="md:col-span-2">
                 <Input
-                  placeholder="https://discord.com/api/webhooks/..."
+                  placeholder={newType === "EMAIL" ? "your@email.com" : "https://discord.com/api/webhooks/..."}
                   value={newUrl}
                   onChange={(e) => setNewUrl(e.target.value)}
                 />
@@ -207,8 +240,71 @@ export default function NotificationsPage() {
           </CardContent>
         </Card>
 
+        {/* Recent Alerts Section */}
+        <Card className="mb-8 border-coffee/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Recent Alerts
+            </CardTitle>
+            <CardDescription>
+              View recent incidents and downtime alerts for your servers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingAlerts ? (
+              <div className="flex justify-center p-4">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : alerts.length === 0 ? (
+              <div className="text-center py-8">
+                <CheckCircle2 className="h-12 w-12 text-emerald-500 mx-auto mb-3" />
+                <p className="text-muted-foreground">No recent alerts. All systems operational!</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {alerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`flex items-start gap-3 p-3 rounded-lg border ${
+                      alert.severity === "critical"
+                        ? "border-red-500/30 bg-red-500/10"
+                        : alert.severity === "warning"
+                        ? "border-yellow-500/30 bg-yellow-500/10"
+                        : "border-blue-500/30 bg-blue-500/10"
+                    }`}
+                  >
+                    {alert.severity === "critical" ? (
+                      <XCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    ) : alert.severity === "warning" ? (
+                      <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <Bell className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{alert.serverName}</span>
+                        {alert.resolved && (
+                          <Badge variant="outline" className="text-emerald-500 border-emerald-500">
+                            Resolved
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{alert.message}</p>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                        <Clock className="h-3 w-3" />
+                        {new Date(alert.timestamp).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Existing Webhooks List */}
-        <h2 className="text-xl font-bold mb-4">Your Channels</h2>
+        <h2 className="text-xl font-bold mb-4">Your Notification Channels</h2>
         {loading ? (
           <div className="flex justify-center p-8">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -230,7 +326,7 @@ export default function NotificationsPage() {
                 <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                      <Webhook className="h-5 w-5" />
+                      {w.type === "EMAIL" ? <Mail className="h-5 w-5" /> : <Webhook className="h-5 w-5" />}
                     </div>
                     <div>
                       <h3 className="font-semibold">{w.label}</h3>

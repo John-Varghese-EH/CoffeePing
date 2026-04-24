@@ -82,6 +82,12 @@ async function sendTelegram(botToken: string, chatId: string, payload: NotifyPay
   });
 }
 
+async function sendEmail(email: string, payload: NotifyPayload) {
+  // For now, log the email notification (actual email sending would require an email service)
+  console.log(`[EMAIL ALERT] To: ${email}, Subject: ${payload.serverName} is ${payload.status}`, payload);
+  // TODO: Integrate with email service like Resend, SendGrid, or AWS SES
+}
+
 export async function dispatchNotifications(payload: NotifyPayload) {
   const channels = await prisma.notificationChannel.findMany({
     where: {
@@ -111,6 +117,9 @@ export async function dispatchNotifications(payload: NotifyPayload) {
             config.chatId as string,
             payload
           );
+          break;
+        case "EMAIL":
+          await sendEmail(config.email as string, payload);
           break;
         default:
           break;

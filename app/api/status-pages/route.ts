@@ -31,10 +31,15 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { slug, title, description, branding } = body;
+    const { slug, title, description, logoUrl, accentColor, customCss } = body;
 
     if (!slug || !title) {
       return NextResponse.json({ error: "Slug and title are required" }, { status: 400 });
+    }
+
+    // Validate logoUrl if provided
+    if (logoUrl && !logoUrl.match(/^https?:\/\/.+/)) {
+      return NextResponse.json({ error: "Logo URL must be a valid HTTPS URL" }, { status: 400 });
     }
 
     // Check if slug is taken by someone else
@@ -50,7 +55,14 @@ export async function POST(request: Request) {
     if (userExisting) {
       page = await prisma.statusPage.update({
         where: { id: userExisting.id },
-        data: { slug, title, description, branding },
+        data: {
+          slug,
+          title,
+          description,
+          logoUrl: logoUrl || null,
+          accentColor: accentColor || null,
+          customCss: customCss || null,
+        },
       });
     } else {
       page = await prisma.statusPage.create({
@@ -59,7 +71,9 @@ export async function POST(request: Request) {
           slug,
           title,
           description,
-          branding: branding ?? true,
+          logoUrl: logoUrl || null,
+          accentColor: accentColor || null,
+          customCss: customCss || null,
         },
       });
     }

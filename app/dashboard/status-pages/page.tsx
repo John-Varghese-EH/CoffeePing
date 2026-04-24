@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Globe, Copy, ExternalLink, Trash2 } from "lucide-react";
+import { Loader2, Globe, Copy, ExternalLink, Trash2, ImageIcon, Palette, Code } from "lucide-react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
 
@@ -16,12 +16,22 @@ export default function StatusPagesDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
-  const [pageData, setPageData] = useState<{ id: string, slug: string, title: string, description: string | null, branding: boolean } | null>(null);
-  
+  const [pageData, setPageData] = useState<{
+    id: string,
+    slug: string,
+    title: string,
+    description: string | null,
+    logoUrl: string | null,
+    accentColor: string | null,
+    customCss: string | null,
+  } | null>(null);
+
   const [slug, setSlug] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [branding, setBranding] = useState(true);
+  const [logoUrl, setLogoUrl] = useState("");
+  const [accentColor, setAccentColor] = useState("#8B5CF6");
+  const [customCss, setCustomCss] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -37,7 +47,9 @@ export default function StatusPagesDashboard() {
           setSlug(data.slug);
           setTitle(data.title);
           setDescription(data.description || "");
-          setBranding(data.branding);
+          setLogoUrl(data.logoUrl || "");
+          setAccentColor(data.accentColor || "#8B5CF6");
+          setCustomCss(data.customCss || "");
         }
       }
     } catch {
@@ -54,7 +66,14 @@ export default function StatusPagesDashboard() {
       const res = await fetch("/api/status-pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, title, description, branding }),
+        body: JSON.stringify({
+          slug,
+          title,
+          description,
+          logoUrl: logoUrl || null,
+          accentColor: accentColor || null,
+          customCss: customCss || null,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -181,17 +200,69 @@ export default function StatusPagesDashboard() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <label className="text-sm font-medium">Show CoffeePing Branding</label>
-                    <p className="text-xs text-muted-foreground">
-                      Display "Powered by CoffeePing" at the bottom of the page.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={branding}
-                    onCheckedChange={setBranding}
+                {/* Custom Logo */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Custom Logo URL (Optional)
+                  </label>
+                  <Input
+                    placeholder="https://your-domain.com/logo.png"
+                    value={logoUrl}
+                    onChange={(e) => setLogoUrl(e.target.value)}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Recommended: 200x60px, transparent PNG or SVG. Leave empty to use default.
+                  </p>
+                </div>
+
+                {/* Accent Color */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Palette className="h-4 w-4" />
+                    Accent Color
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={accentColor}
+                      onChange={(e) => setAccentColor(e.target.value)}
+                      className="h-10 w-20 rounded-md border border-input"
+                    />
+                    <Input
+                      value={accentColor}
+                      onChange={(e) => setAccentColor(e.target.value)}
+                      className="flex-1"
+                      placeholder="#8B5CF6"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Used for status indicators and links on your public page.
+                  </p>
+                </div>
+
+                {/* Custom CSS */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Code className="h-4 w-4" />
+                    Custom CSS (Optional)
+                  </label>
+                  <textarea
+                    value={customCss}
+                    onChange={(e) => setCustomCss(e.target.value)}
+                    placeholder="/* Add your custom styles here */\n.header { background: #000; }"
+                    className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Advanced: Inject custom CSS into your public status page.
+                  </p>
+                </div>
+
+                {/* Branding Notice */}
+                <div className="rounded-lg border border-coffee/30 bg-coffee/5 p-4">
+                  <p className="text-sm text-muted-foreground">
+                    <strong>CoffeePing Branding:</strong> "Powered by CoffeePing" and "J0X" watermark will always be displayed on your status page as part of our open-source commitment.
+                  </p>
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col-reverse sm:flex-row justify-between gap-4 border-t p-6">
