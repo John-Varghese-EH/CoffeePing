@@ -42,6 +42,7 @@ import {
   Wifi,
   WifiOff,
   Settings,
+  Download,
 } from "lucide-react";
 
 type LastPing = {
@@ -609,7 +610,7 @@ export default function DashboardPage() {
                               {server.status}
                             </Badge>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex items-center justify-end gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                             <Button
                               variant="ghost"
                               size="icon"
@@ -624,6 +625,16 @@ export default function DashboardPage() {
                               ) : (
                                 <Play className="h-5 w-5" />
                               )}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                window.open(`/api/servers/${server.id}/export`, "_blank");
+                              }}
+                              title="Export Ping Logs (CSV)"
+                            >
+                              <Download className="h-5 w-5" />
                             </Button>
                             <Button
                               variant="ghost"

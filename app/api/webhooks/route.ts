@@ -247,3 +247,57 @@ export async function PATCH(request: Request) {
     );
   }
 }
+
+/**
+ * DELETE /api/webhooks?id=...
+ */
+export async function DELETE(request: Request) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = new URL(request.url);
+    const channelId = url.searchParams.get("id");
+
+    if (!channelId) {
+      return NextResponse.json({ error: "Channel ID is required" }, { status: 400 });
+    }
+
+    const channel = await prisma.notificationChannel.findFirst({
+      where: { id: channelId, userId: user.id },
+    });
+
+    if (!channel) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    await prisma.notificationChannel.delete({
+      where: { id: channelId },
+    });
+
+    await logSecurityEvent("webhook_deleted", {
+      userId: user.id,
+      webhookId: channelId,
+      ip: getClientIp(request),
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    await logSecurityEvent("api_error", {
+      endpoint: "/api/webhooks",
+      method: "DELETE",
+      error: error instanceof Error ? error.message : "Unknown error",
+      ip: getClientIp(request),
+    });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

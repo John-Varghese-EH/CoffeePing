@@ -2,6 +2,8 @@
 
 An open-source, high-performance SaaS that prevents free-tier backends (Render, Koyeb, Railway) from idling by sending human-like "caffeinated" pings.
 
+![Cron job status](https://api.cron-job.org/jobs/7520045/8c109e23b91da87d/status-7.svg)
+
 ## 🚀 Features
 
 - **Zero Cold Starts:** Keep your free-tier backends awake 24/7
